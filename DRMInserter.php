@@ -9,9 +9,17 @@ include_once "NameManipulator.php";
  * Time: 8:54 AM
  */
 
+/**
+ *
+ * IMPORTANTE
+ * FALTA PEGAR UM JPG E BOTAR NA PASTA DE IMAGENS DO EBOOK E DEPOIS RETORNAR O ENDEREÇO RELATIVO PARA CRIAR O LINK
+ * CONSERTAR A INSERÇÃO DO BACKGROUND NO CSS
+ *
+ */
+
 class DRMInserter{
     public static $opfPath;
-    public static function insertDRM($bookPath, $userObj){
+    public static function insertDRM($bookPath, $userObj, $imgArray = null){
         $pathList = FolderManipulator::getFolders($bookPath);
         $cssFolder = DRMInserter::getCSSFolder($bookPath);
         foreach($pathList as $i){
@@ -19,7 +27,7 @@ class DRMInserter{
                 $tempExt = NameManipulator::getFileExtension($i);
                 if (DRMInserter::hasModifiableExtension($tempExt) && !is_dir($i)) {
                     if(strcmp('css', $tempExt)!=0)
-                        DRMInserter::modifyStructure($i, $tempExt, $cssFolder, $userObj);
+                        DRMInserter::modifyStructure($i, $tempExt, $cssFolder, $userObj, $imgArray);
                     else
                         DRMInserter::createCSSFile($i);
                 }
@@ -60,7 +68,7 @@ class DRMInserter{
             return '';
     }
 
-    private static function modifyStructure($path, $ext, $cssFolder, $userObj){
+    private static function modifyStructure($path, $ext, $cssFolder, $userObj, $imgArray){
         $read = fopen($path, 'r');
         $tempName = $path . '.tmp';
         $write = fopen($tempName, 'w');
@@ -69,6 +77,10 @@ class DRMInserter{
         while(!feof($read)){
             $line = fgets($read);
             if(strcmp('html', $ext)==0 | strcmp('xhtml', $ext)==0){
+                if(stristr($line, '<body')){
+                    $line .= "\n" . '<div class = "watermarkDRMImage"></div>';
+                    $replace = true;
+                }
                 if(stristr($line, '</head>')){
                     $pos = strpos($line, '</head>');
                     //$cssFolder = substr($cssFolder, strrpos($path, '/')+1, strlen($cssFolder));
@@ -89,7 +101,7 @@ class DRMInserter{
                 if(stristr($line, '</manifest>')){
                     $pos = strpos($line, '</manifest>');
                     $cssFolder = substr($cssFolder, strrpos($path, '/')+1, strlen($cssFolder)) . '/DRM.css';
-                    $line = substr($line, 0, $pos) . DRMAccess::getOPFRef($cssFolder) . substr($line, $pos, strlen($line));
+                    $line = substr($line, 0, $pos) . DRMAccess::getOPFRef($cssFolder) . DRMAccess::getOPFImageRef($imgArray) . substr($line, $pos, strlen($line))  ;
                     $replaced = true;
                 }
                 fputs($write, $line);
@@ -114,6 +126,9 @@ class DRMInserter{
             $writeCSS = fopen($cssRelPath, 'w');
             while(!feof($readCSS)){
                 $line = fgets($readCSS);
+                if(stristr($line, "background"))
+                    $line = 'background: url("../Images/LogoIFMA.jpg") no-repeat;';
+
                 fputs($writeCSS, $line);
             }
             fclose($readCSS);

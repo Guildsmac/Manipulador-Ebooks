@@ -28,4 +28,12 @@ class DRMAccess{
         return '<item id="drm"  href="' . $cssPath . '" media-type="text/css" />';
     }
 
+    public static function getOPFImageRef($imgArray = null){
+        $r = '';
+        if($imgArray){
+            $r = "\n" . '<item id = "drm_img " href = "' . $imgArray->getImageUrl() . '" media-type="image/jpeg" />' . "\n";
+        }
+        return $r;
+    }
+
 }
