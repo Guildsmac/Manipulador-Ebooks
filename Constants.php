@@ -7,7 +7,7 @@
  */
 class Constants{
     public static $htmlPath = 'C:/Users/guild/Desktop/footer/footer.html';
-    public static $cssPath = 'C:/Users/luisclaudio.00PRPGI07D/Desktop/BDI Ebook App/DRM.css';
+    public static $cssPath = 'C:/wamp64/www/Project_BDI_eBook/Footer/DRM.css';
 
 
 }
