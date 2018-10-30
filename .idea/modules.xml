@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/.idea/EbookManipulator.iml" filepath="$PROJECT_DIR$/.idea/EbookManipulator.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/.idea/Manipulador-Ebooks.iml" filepath="$PROJECT_DIR$/.idea/Manipulador-Ebooks.iml" />
->>>>>>> b948da49fffb521441c56613add3128a23552345
     </modules>
   </component>
 </project>

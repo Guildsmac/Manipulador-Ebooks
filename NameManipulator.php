@@ -16,7 +16,7 @@ class NameManipulator{
 
     }
     public static function getFilePath($filePath){
-        return pathinfo($filePath, PATHINFO_FILENAME);
+        return pathinfo($filePath, PATHINFO_DIRNAME);
     }
 
     public static function invertSlashes($path){

@@ -21,7 +21,7 @@ class DRMAccess{
 
     }
     public static function getHTMLDRMRef($cssRelPath){
-        return $cssRelPath!='' ? ('<link rel="stylesheet" href="' . $cssRelPath . '/DRM.css" />') : ('<link rel="stylesheet" href="./DRM.css" />');
+        return $cssRelPath!='' ? ('<link rel="stylesheet" href="' . $cssRelPath . 'DRM.css" />') : ('<link rel="stylesheet" href="./DRM.css" />');
     }
 
     public static function getOPFRef($cssPath){

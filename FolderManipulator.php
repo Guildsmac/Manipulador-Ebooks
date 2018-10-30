@@ -28,5 +28,14 @@ class FolderManipulator{
         mkdir($actFolder, 0777);
         return $actFolder;
     }
+    public static function getNewFolderNoCreate($path, $folderName){
+        $cont = 1;
+        $actFolder = $path . "\\" . $folderName . "-" . $cont;
+        if(file_exists($actFolder)){
+            while(file_exists($actFolder))
+                $actFolder = $path . "\\" . $folderName . "-" . ++$cont;
+        }
+        return $actFolder;
+    }
 
 }

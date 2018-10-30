@@ -29,7 +29,7 @@ class DRMInserter
 
         if ($imgArray)
             $bookImagePath = self::createImageFile($imageFolder, $imgArray->getImageUrl());
-        $imagePathRelativeToCSS =  self::getCSSPathRelativeToHTML($cssFolder . '/DRM.css', $imageFolder) . '/' . NameManipulator::getFileName($bookImagePath) . '.'. NameManipulator::getFileExtension($bookImagePath);
+        $imagePathRelativeToCSS = self::getRelativePathToOther($cssFolder . '/DRM.css', $imageFolder) .  NameManipulator::getFileName($bookImagePath) . '.' . NameManipulator::getFileExtension($bookImagePath);
 
         self::createCSSFile($cssFolder . '/', $imagePathRelativeToCSS);
 
@@ -62,20 +62,38 @@ class DRMInserter
         return false;
     }
 
-    private static function getCSSPathRelativeToHTML($htmlPath, $cssPath)
+    private static function getRelativePathToOther($from, $to)
     {
-        $originalHtmlPath = $htmlPath;
-        $htmlPath = substr($htmlPath, 0, strrpos($htmlPath, '/'));
-        $htmlSlashCount = substr_count($htmlPath, '/');
-        $cssSlashCount = substr_count($cssPath, '/');
-        if ($cssSlashCount > $htmlSlashCount) {
-            return substr($cssPath, strrpos($originalHtmlPath, '/') + 1, strlen($cssPath));
-        } else if ($cssSlashCount == $htmlSlashCount) {
-            $temp = substr($cssPath, 0, strrpos($htmlPath, '/'));
-            $multiplier = $htmlSlashCount - substr_count($temp, '/');
-            return str_replace($temp . '/', str_repeat('../', $multiplier), $cssPath);
-        } else
-            return '';
+        // some compatibility fixes for Windows paths
+        $from = is_dir($from) ? rtrim($from, '\/') . '/' : $from;
+        $to = is_dir($to) ? rtrim($to, '\/') . '/' : $to;
+        $from = str_replace('\\', '/', $from);
+        $to = str_replace('\\', '/', $to);
+
+        $from = explode('/', $from);
+        $to = explode('/', $to);
+        $relPath = $to;
+
+        foreach ($from as $depth => $dir) {
+            // find first non-matching dir
+            if ($dir === $to[$depth]) {
+                // ignore this directory
+                array_shift($relPath);
+            } else {
+                // get number of remaining dirs to $from
+                $remaining = count($from) - $depth;
+                if ($remaining > 1) {
+                    // add traversals up to first matching dir
+                    $padLength = (count($relPath) + $remaining - 1) * -1;
+                    $relPath = array_pad($relPath, $padLength, '..');
+                    break;
+                } else {
+                    $relPath[0] = './' . $relPath[0];
+                }
+            }
+        }
+        return implode('/', $relPath);
+
     }
 
     private static function modifyStructure($path, $ext, $cssFolder, $userObj, $imgPath = null)
@@ -96,7 +114,7 @@ class DRMInserter
                 if (stristr($line, '</head>')) {
                     $pos = strpos($line, '</head>');
                     //$cssFolder = substr($cssFolder, strrpos($path, '/')+1, strlen($cssFolder));
-                    $cssFolder = DRMInserter::getCSSPathRelativeToHTML($path, $cssFolder);
+                    $cssFolder = DRMInserter::getRelativePathToOther($path, $cssFolder);
                     $line = substr($line, 0, $pos) . DRMAccess::getHTMLDRMRef($cssFolder) . substr($line, $pos, strlen($line));
                     $replaced = true;
                 }
@@ -113,11 +131,11 @@ class DRMInserter
                 DRMInserter::$opfPath = $path;
                 if (stristr($line, '</manifest>')) {
                     $pos = strpos($line, '</manifest>');
-                    $cssFolder = substr($cssFolder, strrpos($path, '/') + 1, strlen($cssFolder)) . '/DRM.css';
+                    $cssFolder = self::getRelativePathToOther($path, $cssFolder) . 'DRM.css';
                     $imgFolder = substr($imgPath, 0, strrpos($imgPath, '/'));
-                    $imgPath = self::getCSSPathRelativeToHTML($path, $imgFolder) . '/' . NameManipulator::getFileName($imgPath) . '.' . NameManipulator::getFileExtension($imgPath);
+                    $imgPath = self::getRelativePathToOther($path, $imgFolder) . NameManipulator::getFileName($imgPath) . '.' . NameManipulator::getFileExtension($imgPath);
 
-                    $line = substr($line, 0, $pos) . DRMAccess::getOPFRef($cssFolder) . DRMAccess::getOPFImageRef($imgPath)  . substr($line, $pos, strlen($line));
+                    $line = substr($line, 0, $pos) . DRMAccess::getOPFRef($cssFolder) . DRMAccess::getOPFImageRef($imgPath) . substr($line, $pos, strlen($line));
                     $replaced = true;
                 }
                 fputs($write, $line);
@@ -151,9 +169,9 @@ class DRMInserter
             $writeCSS = fopen($cssRelPath, 'w');
             while (!feof($readCSS)) {
                 $line = fgets($readCSS);
-                if($imagePath)
-                    if(stristr($line, "background: none;"))
-                        $line = 'background: url("'. $imagePath . '") no-repeat;';
+                if ($imagePath)
+                    if (stristr($line, "background: none;"))
+                        $line = 'background: url("' . $imagePath . '") no-repeat;';
                 fputs($writeCSS, $line);
             }
             fclose($readCSS);
@@ -171,19 +189,23 @@ class DRMInserter
             }
 
         }
-        return self::createMetaFolder($bookPath, "Styles");
+        $newFolder = self::createMetaFolder($bookPath, "Styles");
+        mkdir($newFolder, 0777);
+        return $newFolder;
     }
 
     private static function getImageFolder($bookPath)
     {
         $pathList = FolderManipulator::getFolders($bookPath);
         foreach ($pathList as $i) {
-            $tempExt = NameManipulator::getFileExtension($i);
-            if (strcmp($tempExt, 'jpg') == 0 && !is_dir($i)) {
-                return substr($i, 0, strrpos($i, '/'));
-            }
+            if(NameManipulator::getFileExtension($i)!='')
+                if (exif_imagetype($i) && !is_dir($i)) {
+                    return substr($i, 0, strrpos($i, '/'));
+                }
         }
-        return self::createMetaFolder($bookPath, "Images");
+        $newFolder = self::createMetaFolder($bookPath, "Images");
+        mkdir($newFolder, 0777);
+        return $newFolder;
     }
 
     private static function createMetaFolder($bookPath, $folderName)
