@@ -3,7 +3,9 @@
     include_once "FolderManipulator.php";
     include_once "NameManipulator.php";
 
-    function getCoverImage($path){
+    class Database_Organize{
+
+    static function getCoverImage($path){
         $read = fopen($path, 'r');
         while(!feof($read)){
             $line = fgets($read);
@@ -17,7 +19,7 @@
         return '';
     }
 
-    function database_organize($epubPath){
+    static function organize($epubPath){
         $r = new stdClass();
         $r->book_path = $epubPath;
         $r->opf_path = '';
@@ -28,10 +30,11 @@
         foreach(FolderManipulator::getFolders($extractedPath) as $i)
             if(strcmp(NameManipulator::getFileExtension($i), 'opf')==0){
                 $r->opf_path = $i;
-                $coverImageRelativePath = getCoverImage($i);
+                $coverImageRelativePath = Database_Organize::getCoverImage($i);
                 $r->icon_img_path = $coverImageRelativePath!='' ? "$r->opf_path\\$coverImageRelativePath" : '' ;
 
                 break;
             }
         return $r;
+    }
     }
