@@ -11,8 +11,8 @@
             $line = fgets($read);
             if(stristr($line, 'id="cover"')){
                 $hrefPos = strpos($line, 'href=');
-                $hrefToEnd = substr($line, $hrefPos+1, strlen($line));
-                $pathToImage = substr($hrefToEnd, 0, strpos($hrefToEnd, '"'));
+                $hrefToEnd = substr($line, $hrefPos, strlen($line));
+                $pathToImage = substr($hrefToEnd, 6, strpos(substr($hrefToEnd, 6, strlen($hrefToEnd)+1), '"'));
                 return $pathToImage;
             }
         }
@@ -31,7 +31,7 @@
             if(strcmp(NameManipulator::getFileExtension($i), 'opf')==0){
                 $r->opf_path = $i;
                 $coverImageRelativePath = Database_Organize::getCoverImage($i);
-                $r->icon_img_path = $coverImageRelativePath!='' ? "$r->opf_path\\$coverImageRelativePath" : '' ;
+                $r->icon_img_path = $coverImageRelativePath!='' ? dirname($r->opf_path) . "/$coverImageRelativePath" : '' ;
 
                 break;
             }
