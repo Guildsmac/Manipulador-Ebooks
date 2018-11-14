@@ -26,11 +26,11 @@ class DRMInserter
         $cssFolder = DRMInserter::getCSSFolder($bookPath);
         $imageFolder = DRMInserter::getImageFolder($bookPath);
         $bookImagePath = null;
-
-        if ($imgArray)
+        $imagePathRelativeToCSS = null;
+        if ($imgArray) {
             $bookImagePath = self::createImageFile($imageFolder, $imgArray->getImageUrl());
-        $imagePathRelativeToCSS = self::getRelativePathToOther($cssFolder . '/DRM.css', $imageFolder) .  NameManipulator::getFileName($bookImagePath) . '.' . NameManipulator::getFileExtension($bookImagePath);
-
+            $imagePathRelativeToCSS = self::getRelativePathToOther($cssFolder . '/DRM.css', $imageFolder) . NameManipulator::getFileName($bookImagePath) . '.' . NameManipulator::getFileExtension($bookImagePath);
+        }
         self::createCSSFile($cssFolder . '/', $imagePathRelativeToCSS);
 
         foreach ($pathList as $i) {
@@ -48,7 +48,7 @@ class DRMInserter
 
     private static function getExtensions()
     {
-        return ['xhtml', 'html', 'css', 'opf'];
+        return array('xhtml', 'html', 'css', 'opf');
 
     }
 
@@ -165,7 +165,7 @@ class DRMInserter
     {
         $cssRelPath = substr($path, 0, strrpos($path, '/')) . '/DRM.css';
         if (!file_exists($cssRelPath)) {
-            $readCSS = fopen(Constants::$cssPath, 'r');
+            $readCSS = fopen(Constants::cssPath(), 'r');
             $writeCSS = fopen($cssRelPath, 'w');
             while (!feof($readCSS)) {
                 $line = fgets($readCSS);

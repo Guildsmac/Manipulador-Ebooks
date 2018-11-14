@@ -1,0 +1,29 @@
+.watermarkDRM{
+	flex-shrink: 0;
+	opacity: 0.4;
+	padding: 20px;
+	text-align: left;
+	margin: 0;
+	font: 20px Sans-Seif;
+	background: #0000cc;
+	color: #e68a00;
+	position: fixed;
+    height: 70px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
+	font-size:12px;
+	
+}
+
+
+.watermarkDRMImage{
+	background: none;
+	width:100%;
+	height:100%;
+	opacity:0.1;
+	z-index:-1000;
+	position:fixed;
+
+}

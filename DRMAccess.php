@@ -17,7 +17,13 @@ class DRMAccess{
             }
         }
         return null;*/
-        return "<footer class=\"watermarkDRM\"><p> Nome: {$userObj->name} </p><p> CPF: {$userObj->cpf} </p><p> ID: {$userObj->id}</p></footer>";
+
+        $r = "<footer class = 'watermarkDRM'>";
+        foreach($userObj as $key=>$value)
+            $r .= "<p>$key: $value</p>";
+        $r .= "</footer>";
+
+        return $r;
 
     }
     public static function getHTMLDRMRef($cssRelPath){
