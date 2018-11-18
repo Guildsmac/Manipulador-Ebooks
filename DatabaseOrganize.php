@@ -3,7 +3,7 @@
     include_once "FolderManipulator.php";
     include_once "NameManipulator.php";
 
-    class Database_Organize{
+    class DatabaseOrganize{
 
     static function getCoverImage($path){
         $read = fopen($path, 'r');
@@ -30,7 +30,7 @@
         foreach(FolderManipulator::getFolders($extractedPath) as $i)
             if(strcmp(NameManipulator::getFileExtension($i), 'opf')==0){
                 $r->opf_path = $i;
-                $coverImageRelativePath = Database_Organize::getCoverImage($i);
+                $coverImageRelativePath = DatabaseOrganize::getCoverImage($i);
                 $r->icon_img_path = $coverImageRelativePath!='' ? dirname($r->opf_path) . "/$coverImageRelativePath" : '' ;
 
                 break;

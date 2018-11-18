@@ -8,7 +8,7 @@
 class Constants{
     public static $htmlPath = 'C:/Users/guild/Desktop/footer/footer.html';
     public static function cssPath(){
-        return FCPATH . '\\application\\libraries\\Manipulador-Ebooks\\DRM.css';
+        return FCPATH . 'application/libraries/Manipulador-Ebooks/DRM.css';
     }
 
 
