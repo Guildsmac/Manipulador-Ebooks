@@ -3,7 +3,7 @@
     include_once "FolderManipulator.php";
     include_once "NameManipulator.php";
 
-    class Database_Organize{
+    class DatabaseOrganize{
 
     static function getCoverImage($path){
         $read = fopen($path, 'r');

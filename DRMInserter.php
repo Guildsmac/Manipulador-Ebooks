@@ -132,10 +132,17 @@ class DRMInserter
                 if (stristr($line, '</manifest>')) {
                     $pos = strpos($line, '</manifest>');
                     $cssFolder = self::getRelativePathToOther($path, $cssFolder) . 'DRM.css';
-                    $imgFolder = substr($imgPath, 0, strrpos($imgPath, '/'));
-                    $imgPath = self::getRelativePathToOther($path, $imgFolder) . NameManipulator::getFileName($imgPath) . '.' . NameManipulator::getFileExtension($imgPath);
 
-                    $line = substr($line, 0, $pos) . DRMAccess::getOPFRef($cssFolder) . DRMAccess::getOPFImageRef($imgPath) . substr($line, $pos, strlen($line));
+
+
+                    
+                    if($imgPath){
+                        $imgFolder = substr($imgPath, 0, strrpos($imgPath, '/'));
+                        $imgPath = self::getRelativePathToOther($path, $imgFolder) . NameManipulator::getFileName($imgPath) . '.' . NameManipulator::   getFileExtension($imgPath);
+
+                    }
+
+                    $line = substr($line, 0, $pos) . DRMAccess::getOPFRef($cssFolder) . ($imgPath ? DRMAccess::getOPFImageRef($imgPath) : '') . substr($line, $pos, strlen($line));
                     $replaced = true;
                 }
                 fputs($write, $line);
