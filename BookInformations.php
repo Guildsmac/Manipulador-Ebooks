@@ -33,7 +33,7 @@ class BookInformations{
             if(stristr($line, '<dc:rights'))
                 $informations['direito'] = trim(strip_tags($line));
             if(stristr($line, '<dc:description'))
-                $informations['descricao'] = trim(strip_tags($line));
+                $informations['descricao'] = strip_tags(htmlspecialchars_decode(trim($line)));
 
 
         }
