@@ -8,7 +8,7 @@
 	background: #0000cc;
 	color: #e68a00;
 	position: fixed;
-    height: 70px;
+    height: auto !important;
     bottom: 0px;
     left: 0px;
     right: 0px;
