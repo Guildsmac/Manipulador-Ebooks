@@ -7,6 +7,7 @@
 
     static function getCoverImage($path){
         $read = fopen($path, 'r');
+        $pathToImage = '';
         while(!feof($read)){
             $line = fgets($read);
             if(stristr($line, 'id="cover-image"')){
@@ -19,10 +20,10 @@
                 $hrefPos = strpos($line, 'href=');
                 $hrefToEnd = substr($line, $hrefPos, strlen($line));
                 $pathToImage = substr($hrefToEnd, 6, strpos(substr($hrefToEnd, 6, strlen($hrefToEnd)+1), '"'));
-                return $pathToImage;
+
             }
         }
-        return '';
+        return $pathToImage;
     }
 
     static function organize($epubPath){
