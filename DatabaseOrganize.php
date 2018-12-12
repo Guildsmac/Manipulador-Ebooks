@@ -9,7 +9,13 @@
         $read = fopen($path, 'r');
         while(!feof($read)){
             $line = fgets($read);
-            if(stristr($line, 'id="cover"')){
+            if(stristr($line, 'id="cover-image"')){
+                $hrefPos = strpos($line, 'href=');
+                $hrefToEnd = substr($line, $hrefPos, strlen($line));
+                $pathToImage = substr($hrefToEnd, 6, strpos(substr($hrefToEnd, 6, strlen($hrefToEnd)+1), '"'));
+                return $pathToImage;
+            }
+            else if(stristr($line, 'id="cover"')){
                 $hrefPos = strpos($line, 'href=');
                 $hrefToEnd = substr($line, $hrefPos, strlen($line));
                 $pathToImage = substr($hrefToEnd, 6, strpos(substr($hrefToEnd, 6, strlen($hrefToEnd)+1), '"'));
