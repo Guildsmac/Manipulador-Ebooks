@@ -1,5 +1,13 @@
 <?php
-    include_once "Zipper.php";
+/**
+ * Copyright (c) 2019.
+ * Developed by Gabriel Sousa
+ * @author Gabriel Sousa <gabrielssc.ti@gmail.com>
+ * Last modified 13/12/18 09:35.
+ *
+ */
+
+include_once "Zipper.php";
     include_once "FolderManipulator.php";
     include_once "NameManipulator.php";
 

@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2019.
+ * Developed by Gabriel Sousa
+ * @author Gabriel Sousa <gabrielssc.ti@gmail.com>
+ * Last modified 06/12/18 00:07.
+ *
+ */
+
 .watermarkDRM{
 	flex-shrink: 0;
 	opacity: 0.4;

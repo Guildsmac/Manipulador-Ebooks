@@ -1,4 +1,12 @@
 <?php
+/**
+ * Copyright (c) 2019.
+ * Developed by Gabriel Sousa
+ * @author Gabriel Sousa <gabrielssc.ti@gmail.com>
+ * Last modified 18/11/18 17:18.
+ *
+ */
+
 include_once "DRMAccess.php";
 include_once "Constants.php";
 include_once "NameManipulator.php";
